@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brobots</title>
+<meta name="description" content="Official Brobots merch.">
+<link rel="stylesheet" href="store.css">
+</head>
+<body>
+<header class="fp-head">
+  <a class="fp-logo" href=".">Brobots</a>
+  <nav>
+    <a href="https://brobots.space/dossiers.html">Dossiers</a>
+    <a href="https://brobots.space/services.html">Services</a>
+    <a href="https://brobots.space/multimedia.html">Multimedia</a>
+    <a href="https://brobots.space/">Home</a>
+    <a href="https://brobots.space/">Brobots</a>
+    <a href=".">Shop</a>
+  </nav>
+</header>
+<main id="shop"><p>Loading...</p></main>
+<footer class="fp-foot">
+  <p>Official Brobots merch.</p>
+  <p><a href="https://brobots.space">brobots.space</a> · <a href="https://brobots.space/dossiers.html">Meet the bots</a></p>
+</footer>
+<script>
+const BASE = location.pathname.startsWith('/store') ? '/store' : '';
+fetch(BASE + '/api/catalog').then(r=>r.json()).then(data=>{
+  const shop = document.getElementById('shop');
+  shop.innerHTML = '<div class="grid"></div>';
+  const grid = shop.querySelector('.grid');
+  data.products.forEach(p=>{
+    const v = p.variants[0];
+    const price = v.price_cents ? '$'+(v.price_cents/100).toFixed(2) : '$5 shipping';
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `<h3><a href="${BASE}/product/${p.id}">${p.title}</a></h3><p>${p.description||''}</p><p class="price">${price}</p><button class="add" data-add-sku="${v.sku}">Add to cart</button>`;
+    grid.appendChild(card);
+  });
+}).catch(()=>document.getElementById('shop').textContent='Could not load store.');
+</script>
+<script src="cart.js" defer></script>
+</body></html>
